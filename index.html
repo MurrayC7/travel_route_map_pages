@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>米兰-瑞士-多洛米蒂自驾环线地图</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #5d6b7a;
+      --panel: #ffffff;
+      --line: #d7dee8;
+      --accent: #1565c0;
+      --lodging: #e59f13;
+      --rail: #7b4ab2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #eef2f6;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      position: relative;
+      z-index: 2;
+      padding: 22px 20px 26px;
+      background: var(--panel);
+      box-shadow: 0 0 24px rgba(31, 41, 51, 0.18);
+      overflow: auto;
+      max-height: 100vh;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 14px 0 18px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .swatch.rail {
+      background: repeating-linear-gradient(90deg, var(--rail) 0 8px, transparent 8px 13px);
+      border: 1px solid var(--rail);
+      height: 5px;
+    }
+
+    .swatch.lodging {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--lodging);
+    }
+
+    .segment {
+      border-top: 1px solid var(--line);
+      padding: 13px 0;
+    }
+
+    .segment h2 {
+      margin: 0 0 7px;
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .meta b {
+      color: var(--ink);
+      font-weight: 650;
+    }
+
+    .segment p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .info-section {
+      border-top: 1px solid var(--line);
+      margin-top: 8px;
+      padding-top: 14px;
+    }
+
+    .info-section h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .info-section > p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 8px;
+      padding: 7px 0;
+      border-top: 1px solid #edf1f5;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .info-row:first-of-type { border-top: 0; }
+    .info-row b { color: var(--ink); }
+    .info-row strong { color: var(--ink); font-weight: 650; }
+
+    .tip-list {
+      margin: 0;
+      padding-left: 17px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .tip-list li {
+      margin: 5px 0;
+    }
+
+    #map {
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .route-label {
+      border: 0;
+      border-radius: 6px;
+      padding: 5px 7px;
+      color: #10213a;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 2px 9px rgba(31, 41, 51, 0.2);
+      font-size: 12px;
+      line-height: 1.25;
+      white-space: normal;
+      max-width: 190px;
+    }
+
+    .route-label::before { display: none; }
+
+    .marker {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      color: white;
+      background: #1565c0;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(31, 41, 51, 0.35);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .marker.lodging { background: var(--lodging); color: #17202a; }
+    .marker.sight { background: #2d8a57; }
+    .marker.transport { background: var(--rail); }
+
+    .leaflet-popup-content {
+      margin: 10px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .leaflet-control-scale-line {
+      font-family: inherit;
+    }
+
+    @media (max-width: 860px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        max-height: none;
+        box-shadow: none;
+      }
+
+      #map {
+        min-height: 72vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside>
+      <h1>米兰 - 瑞士 - 多洛米蒂自驾环线</h1>
+        <p class="subtitle">2026/9/25 - 10/1，按 10/1 下午/晚上从米兰飞巴塞罗那安排。9/28 采用 Luzern - Chur - Davos - Engadin / Val Müstair - Bolzano - Ortisei 路线，不进入奥地利。路线几何来自 OSRM 公路路由，底图为 OpenStreetMap；不含实时路况，山区请以当天导航和道路管制为准。</p>
+
+      <div class="legend" aria-label="图例">
+        <span><i class="swatch"></i>自驾公路段</span>
+        <span><i class="swatch rail"></i>汽车火车段</span>
+        <span><i class="swatch lodging"></i>推荐住宿地</span>
+      </div>
+
+      <section id="segment-list"></section>
+
+      <section class="info-section">
+        <h2>推荐住宿地点</h2>
+        <p>预算为 9月底山区旺季尾段双人间/晚估算，优先选有停车位、含早餐、可免费取消的住宿。</p>
+        <div class="info-row"><b>9/25</b><span><strong>Täsch</strong>：CHF 150-260；停车和进采尔马特最省心，比住 Zermatt 更稳。</span></div>
+        <div class="info-row"><b>9/26-9/27</b><span><strong>Grindelwald</strong>：CHF 220-420；住车站或 Firstbahn 附近，少女峰、First、小镇都方便。</span></div>
+        <div class="info-row"><b>9/28-9/29</b><span><strong>Ortisei</strong>：EUR 220-420；预算紧可看 Santa Cristina / Selva，约 EUR 170-320。</span></div>
+        <div class="info-row"><b>9/30</b><span><strong>Dobbiaco</strong>：EUR 160-280；三峰山后回米兰方向最均衡，比 Misurina 房源更稳。</span></div>
+      </section>
+
+      <section class="info-section">
+        <h2>9/27 少女峰地区整天</h2>
+        <div class="info-row"><b>08:30-13:30</b><span><strong>Grindelwald First + Bachalpsee</strong>：缆车上 First，走 Cliff Walk，再徒步 Bachalpsee 往返。预算约 CHF 70-95/人，不含午餐。</span></div>
+        <div class="info-row"><b>14:30-17:30</b><span><strong>Männlichen / Kleine Scheidegg 备选</strong>：天气好看 Eiger、Mönch、Jungfrau 山景；预算约 CHF 40-90/人，按缆车/火车组合变化。</span></div>
+        <div class="info-row"><b>备选全天</b><span><strong>Jungfraujoch</strong>：如果云量很低且预算充足再上；约 5-7 小时，预算通常 CHF 180-260+/人。</span></div>
+      </section>
+
+      <section class="info-section">
+        <h2>游玩重点与预算</h2>
+        <div class="info-row"><b>Zermatt</b><span><strong>Gornergrat / Sunnegga / 小镇</strong>：3-5 小时；Gornergrat 约 CHF 90-135/人，Sunnegga 约 CHF 25-40/人，小镇散步免费。</span></div>
+        <div class="info-row"><b>Luzern</b><span><strong>卡佩尔廊桥、老城、湖边午餐</strong>：2-3 小时；步行免费，午餐约 CHF 25-45/人。</span></div>
+        <div class="info-row"><b>Ortisei</b><span><strong>Seceda 日落/山脊、Val Gardena 小镇晚餐</strong>：3-4 小时；缆车约 EUR 35-50/人，晚餐约 EUR 25-45/人。</span></div>
+        <div class="info-row"><b>休斯高原</b><span><strong>Alpe di Siusi 轻徒步、Compatsch 周边</strong>：半天；缆车/公交约 EUR 25-40/人，停车另计。</span></div>
+        <div class="info-row"><b>三峰山</b><span><strong>Rifugio Auronzo - Drei Zinnen 环线</strong>：4-5 小时；收费山路/停车约 EUR 30-40/车，山屋午餐约 EUR 15-30/人。</span></div>
+      </section>
+
+      <section class="info-section">
+        <h2>注意事项</h2>
+        <ul class="tip-list">
+          <li><strong>9/28 已避开奥地利</strong>：路线强制经 Luzern / Chur / Davos / Zernez / Val Müstair / Bolzano，避免进入奥地利境内。</li>
+          <li><strong>中国驾照</strong>：租车前向租车公司确认意大利、瑞士跨境许可和所需翻译件；奥地利不作为本路线行驶国。</li>
+          <li><strong>瑞士高速</strong>：意大利租车通常没有瑞士 vignette，需购买瑞士高速票或电子票。</li>
+          <li><strong>Zermatt 无车</strong>：车停 Täsch，坐接驳火车进 Zermatt；住宿尽量选 Täsch 车站附近。</li>
+          <li><strong>Lötschberg 汽车火车</strong>：Goppenstein - Kandersteg 段按汽车火车处理，预留排队和装车时间。</li>
+          <li><strong>休斯高原</strong>：白天社会车辆上山常有限制，优先用缆车/公交或酒店通行安排。</li>
+          <li><strong>三峰山</strong>：Rifugio Auronzo 收费山路和停车位受天气/客流影响，建议 9/30 早出发并提前查当天管制。</li>
+          <li><strong>山区天气</strong>：Gornergrat、First、Seceda、Tre Cime 都应按当天云量排序，先玩天气最好的高山项目。</li>
+        </ul>
+      </section>
+    </aside>
+
+    <div id="map" role="application" aria-label="自驾路线地图"></div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./route_data.js"></script>
+  <script>
+    const zh = {
+      d1_mxp_taesch: {
+        title: "9/25 米兰 Malpensa -> Täsch",
+        fromTo: "米兰 Malpensa 机场 -> Täsch",
+        note: "10:00 机场取车后出发，13:45 到 Täsch；停车后换火车进 Zermatt。"
+      },
+      d2_taesch_goppenstein: {
+        title: "9/26 Täsch -> Goppenstein",
+        fromTo: "Täsch -> Goppenstein 汽车火车站",
+        note: "采尔马特上午补游后出发，前往 Lötschberg 汽车火车南端。"
+      },
+      d2_loetschberg_car_train: {
+        title: "9/26 Lötschberg 汽车火车",
+        fromTo: "Goppenstein -> Kandersteg",
+        note: "汽车火车段，含排队、装车和穿隧缓冲；地图用虚线表示。"
+      },
+      d2_kandersteg_grindelwald: {
+        title: "9/26 Kandersteg -> Grindelwald",
+        fromTo: "Kandersteg -> Grindelwald",
+        note: "经 Spiez / Interlaken 进入少女峰地区，住 Grindelwald。"
+      },
+      d4_grindelwald_lucerne_ortisei: {
+        title: "9/28 Grindelwald -> Luzern -> Davos -> Ortisei（避开奥地利）",
+        fromTo: "Grindelwald -> 卢塞恩短停 -> Chur -> Davos -> Zernez -> Val Müstair -> Bolzano -> Ortisei",
+        note: "不进入奥地利；经瑞士东部 Davos / Engadin / Val Müstair 进入意大利，卢塞恩建议只短停 1.5-2 小时。"
+      },
+      d6_ortisei_trecime_dobbiaco: {
+        title: "9/30 Ortisei -> Tre Cime -> Dobbiaco",
+        fromTo: "Ortisei -> 三峰山 / Rifugio Auronzo -> Dobbiaco",
+        note: "早出发去三峰山，含停车、徒步与回 Dobbiaco 的时间。"
+      },
+      d7_dobbiaco_mxp: {
+        title: "10/1 Dobbiaco -> 米兰 Malpensa",
+        fromTo: "Dobbiaco -> 米兰 Malpensa 机场",
+        note: "08:00 出发，13:30 抵达机场，适合下午/晚上航班。"
+      }
+    };
+
+    const stopZh = {
+      "Milan Malpensa Airport": "米兰 Malpensa 机场",
+      "Taesch / Zermatt transfer": "Täsch / Zermatt 换乘",
+      "Goppenstein": "Goppenstein 汽车火车南端",
+      "Kandersteg": "Kandersteg 汽车火车北端",
+      "Grindelwald": "Grindelwald",
+      "Luzern short stop": "Luzern 卢塞恩短停",
+      "Chur": "Chur 库尔",
+      "Davos": "Davos 达沃斯",
+      "Zernez": "Zernez / Engadin",
+      "Val Muenstair": "Val Müstair / 瑞意边境方向",
+      "Ortisei": "Ortisei / St. Ulrich",
+      "Tre Cime / Rifugio Auronzo": "Tre Cime / Rifugio Auronzo",
+      "Dobbiaco": "Dobbiaco / Toblach"
+    };
+
+    const lodgingZh = {
+      "9/25 lodging: Taesch": "9/25 推荐住宿：Täsch",
+      "9/26-9/27 lodging: Grindelwald": "9/26-9/27 推荐住宿：Grindelwald",
+      "9/28-9/29 lodging: Ortisei": "9/28-9/29 推荐住宿：Ortisei",
+      "9/30 lodging: Dobbiaco": "9/30 推荐住宿：Dobbiaco"
+    };
+
+    const planDuration = {
+      d1_mxp_taesch: "计划 3小时45分",
+      d2_taesch_goppenstein: "计划 1小时15分",
+      d2_loetschberg_car_train: "计划 45分",
+      d2_kandersteg_grindelwald: "计划 1小时45分",
+      d4_grindelwald_lucerne_ortisei: "计划 11小时30分，含卢塞恩短停和途中休息",
+      d6_ortisei_trecime_dobbiaco: "计划 10小时，含三峰山徒步",
+      d7_dobbiaco_mxp: "计划 5小时30分"
+    };
+
+    const data = window.ROUTE_DATA;
+    const map = L.map("map", { zoomControl: true, preferCanvas: true });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
+
+    const colors = {
+      d1_mxp_taesch: "#1565c0",
+      d2_taesch_goppenstein: "#217a4b",
+      d2_loetschberg_car_train: "#7b4ab2",
+      d2_kandersteg_grindelwald: "#217a4b",
+      d4_grindelwald_lucerne_ortisei: "#c55f10",
+      d6_ortisei_trecime_dobbiaco: "#00838f",
+      d7_dobbiaco_mxp: "#455a64"
+    };
+
+    const allBounds = [];
+    const list = document.getElementById("segment-list");
+
+    function minutesToText(min) {
+      const h = Math.floor(min / 60);
+      const m = min % 60;
+      if (!h) return `${m}分`;
+      return `${h}小时${m ? `${m}分` : ""}`;
+    }
+
+    function routeMiddleLatLng(coords) {
+      const index = Math.floor(coords.length / 2);
+      const c = coords[index];
+      return [c[1], c[0]];
+    }
+
+    data.routes.forEach((route) => {
+      const coords = route.geometry.coordinates;
+      const latLngs = coords.map((c) => [c[1], c[0]]);
+      const isRail = route.id === "d2_loetschberg_car_train";
+      const line = L.polyline(latLngs, {
+        color: colors[route.id],
+        weight: isRail ? 4 : 5,
+        opacity: 0.88,
+        dashArray: isRail ? "10 8" : null,
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(map);
+
+      allBounds.push(line.getBounds());
+
+      const info = zh[route.id];
+      const driveText = route.id === "d2_loetschberg_car_train"
+        ? "汽车火车 45分"
+        : `驾驶约 ${minutesToText(route.duration_min)}`;
+      const label = `${info.title}<br>${route.distance_km} km · ${driveText}<br>${route.depart} -> ${route.arrive}`;
+
+      L.marker(routeMiddleLatLng(coords), {
+        icon: L.divIcon({ className: "", html: `<div class="route-label">${label}</div>`, iconSize: [190, 58], iconAnchor: [95, 29] }),
+        interactive: false
+      }).addTo(map);
+
+      line.bindPopup(`<b>${info.title}</b><br>${info.fromTo}<br>${route.distance_km} km · ${driveText}<br>${route.depart} -> ${route.arrive}<br>${info.note}`);
+
+      const article = document.createElement("article");
+      article.className = "segment";
+      article.innerHTML = `
+        <h2>${info.title}</h2>
+        <div class="meta">
+          <span><b>路程</b> ${route.distance_km} km</span>
+          <span><b>用时</b> ${driveText}</span>
+          <span><b>出发</b> ${route.depart}</span>
+          <span><b>到达</b> ${route.arrive}</span>
+        </div>
+        <p>${planDuration[route.id]}。${info.note}</p>
+      `;
+      list.appendChild(article);
+    });
+
+    data.stops.forEach((stop, index) => {
+      const [lng, lat] = stop.coords;
+      const isLodging = stop.type === "lodging";
+      const markerClass = isLodging ? "lodging" : stop.type === "sight" ? "sight" : stop.type === "transport" ? "transport" : "";
+      const iconText = isLodging ? "住" : String(index + 1);
+      const marker = L.marker([lat, lng], {
+        icon: L.divIcon({ className: "", html: `<div class="marker ${markerClass}">${iconText}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] })
+      }).addTo(map);
+      marker.bindPopup(`<b>${stopZh[stop.name] || stop.name}</b>`);
+    });
+
+    data.lodgings.forEach((lodging) => {
+      const [lng, lat] = lodging.coords;
+      L.marker([lat, lng], {
+        icon: L.divIcon({ className: "", html: `<div class="marker lodging">住</div>`, iconSize: [26, 26], iconAnchor: [13, 13] })
+      }).addTo(map).bindPopup(`<b>${lodgingZh[lodging.name] || lodging.name}</b><br>${lodging.nights}<br>${lodging.reason}`);
+    });
+
+    const group = L.featureGroup(allBounds.map((b) => L.rectangle(b, { opacity: 0, fillOpacity: 0 })));
+    map.fitBounds(group.getBounds(), { padding: [28, 28] });
+  </script>
+</body>
+</html>
