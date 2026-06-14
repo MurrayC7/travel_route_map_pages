@@ -242,7 +242,7 @@
 
       <div class="legend" aria-label="图例">
         <span><i class="swatch"></i>自驾公路段</span>
-        <span><i class="swatch rail"></i>汽车火车段</span>
+        <span><i class="swatch rail"></i>本地缆车/徒步</span>
         <span><i class="swatch lodging"></i>推荐住宿地</span>
       </div>
 
@@ -251,15 +251,16 @@
       <section class="info-section">
         <h2>推荐住宿地点</h2>
         <p>预算为 9月底山区旺季尾段双人间/晚估算，优先选有停车位、含早餐、可免费取消的住宿。</p>
-        <div class="info-row"><b>9/25</b><span><strong>Täsch</strong>：CHF 150-260；停车和进采尔马特最省心，比住 Zermatt 更稳。</span></div>
-        <div class="info-row"><b>9/26-9/27</b><span><strong>Grindelwald</strong>：CHF 220-420；住车站或 Firstbahn 附近，少女峰、First、小镇都方便。</span></div>
+        <div class="info-row"><b>9/25-9/27</b><span><strong>Grindelwald</strong>：CHF 220-420；连住三晚，Lauterbrunnen 山谷、First/Bachalpsee、Jungfraujoch 备选都方便。</span></div>
         <div class="info-row"><b>9/28-9/29</b><span><strong>Ortisei</strong>：EUR 220-420；预算紧可看 Santa Cristina / Selva，约 EUR 170-320。</span></div>
         <div class="info-row"><b>9/30</b><span><strong>米兰 Malpensa 机场附近</strong>：EUR 100-180；适合 10/1 早班机，优先选 Case Nuove / T1-T2 周边。</span></div>
       </section>
 
       <section class="info-section">
         <h2>游玩重点与预算</h2>
-        <div class="info-row"><b>Zermatt</b><span><strong>Gornergrat / Sunnegga / 小镇</strong>：3-5 小时；Gornergrat 约 CHF 90-135/人，Sunnegga 约 CHF 25-40/人，小镇散步免费。</span></div>
+        <div class="info-row"><b>Interlaken</b><span><strong>Harder Kulm / 湖边轻松适应</strong>：2-3 小时；Harder Kulm 约 CHF 40-45/人，适合 9/25 抵达后看体力安排。</span></div>
+        <div class="info-row"><b>Lauterbrunnen</b><span><strong>Staubbach Falls / Trümmelbach Falls / Mürren / Gimmelwald</strong>：整天；瀑布与缆车组合约 CHF 30-90/人。</span></div>
+        <div class="info-row"><b>Grindelwald</b><span><strong>First Cliff Walk / Bachalpsee / Jungfraujoch 备选</strong>：整天；First 约 CHF 70-95/人，Jungfraujoch 约 CHF 180-260+/人。</span></div>
         <div class="info-row"><b>Luzern</b><span><strong>卡佩尔廊桥、老城、湖边午餐</strong>：2-3 小时；步行免费，午餐约 CHF 25-45/人。</span></div>
         <div class="info-row"><b>Ortisei</b><span><strong>Seceda 日落/山脊、Val Gardena 小镇晚餐</strong>：3-4 小时；缆车约 EUR 35-50/人，晚餐约 EUR 25-45/人。</span></div>
         <div class="info-row"><b>休斯高原</b><span><strong>Alpe di Siusi 轻徒步、Compatsch 周边</strong>：半天；缆车/公交约 EUR 25-40/人，停车另计。</span></div>
@@ -273,8 +274,8 @@
           <li><strong>9/28 已避开奥地利</strong>：路线强制经 Luzern / Chur / Davos / Zernez / Val Müstair / Bolzano，避免进入奥地利境内。</li>
           <li><strong>中国驾照</strong>：租车前向租车公司确认意大利、瑞士跨境许可和所需翻译件；奥地利不作为本路线行驶国。</li>
           <li><strong>瑞士高速</strong>：意大利租车通常没有瑞士 vignette，需购买瑞士高速票或电子票。</li>
-          <li><strong>Zermatt 无车</strong>：车停 Täsch，坐接驳火车进 Zermatt；住宿尽量选 Täsch 车站附近。</li>
-          <li><strong>Lötschberg 汽车火车</strong>：Goppenstein - Kandersteg 段按汽车火车处理，预留排队和装车时间。</li>
+          <li><strong>已取消采尔马特</strong>：9/25 直接去 Grindelwald，减少换乘和绕路，瑞士段改为少女峰地区连住三晚。</li>
+          <li><strong>9/25 抵达日</strong>：米兰到 Grindelwald 车程较长，Harder Kulm / Interlaken 只作为体力允许时的轻量安排。</li>
           <li><strong>休斯高原</strong>：白天社会车辆上山常有限制，优先用缆车/公交或酒店通行安排。</li>
           <li><strong>三峰山</strong>：Rifugio Auronzo 收费山路和停车位受天气/客流影响，建议 9/30 早出发并提前查当天管制。</li>
           <li><strong>9/30 长转场</strong>：三峰山后赶回米兰机场附近会很累，建议只走经典短环线或折返路线，避免徒步过量。</li>
@@ -288,28 +289,23 @@
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="./route_data.js?v=2719944"></script>
+  <script src="./route_data.js?v=direct-grindelwald-osrm"></script>
   <script>
     const zh = {
-      d1_mxp_taesch: {
-        title: "9/25 米兰 Malpensa -> Täsch",
-        fromTo: "米兰 Malpensa 机场 -> Täsch",
-        note: "10:00 机场取车后出发，13:45 到 Täsch；停车后换火车进 Zermatt。"
+      d1_mxp_grindelwald: {
+        title: "9/25 米兰 Malpensa -> Grindelwald",
+        fromTo: "米兰 Malpensa 机场 -> Grindelwald",
+        note: "取消采尔马特，落地取车后直接进少女峰地区；下午按体力安排 Interlaken / Harder Kulm。"
       },
-      d2_taesch_goppenstein: {
-        title: "9/26 Täsch -> Goppenstein",
-        fromTo: "Täsch -> Goppenstein 汽车火车站",
-        note: "采尔马特上午补游后出发，前往 Lötschberg 汽车火车南端。"
+      d2_grindelwald_lauterbrunnen_grindelwald: {
+        title: "9/26 Lauterbrunnen 山谷 + Mürren / Gimmelwald",
+        fromTo: "Grindelwald -> Lauterbrunnen -> Stechelberg -> Grindelwald",
+        note: "Staubbach Falls、Trümmelbach Falls、Mürren / Gimmelwald 整天，晚上回 Grindelwald。"
       },
-      d2_loetschberg_car_train: {
-        title: "9/26 Lötschberg 汽车火车",
-        fromTo: "Goppenstein -> Kandersteg",
-        note: "汽车火车段，含排队、装车和穿隧缓冲；地图用虚线表示。"
-      },
-      d2_kandersteg_grindelwald: {
-        title: "9/26 Kandersteg -> Grindelwald",
-        fromTo: "Kandersteg -> Grindelwald",
-        note: "经 Spiez / Interlaken 进入少女峰地区，住 Grindelwald。"
+      d3_grindelwald_first_bachalpsee: {
+        title: "9/27 Grindelwald First + Bachalpsee",
+        fromTo: "Grindelwald -> First -> Bachalpsee -> Grindelwald",
+        note: "缆车上 First，走 Cliff Walk 和 Bachalpsee；Jungfraujoch / Kleine Scheidegg 作为天气好时备选。"
       },
       d4_grindelwald_lucerne_ortisei: {
         title: "9/28 Grindelwald -> Luzern -> Davos -> Ortisei（避开奥地利）",
@@ -330,10 +326,13 @@
 
     const stopZh = {
       "Milan Malpensa Airport": "米兰 Malpensa 机场",
-      "Taesch / Zermatt transfer": "Täsch / Zermatt 换乘",
-      "Goppenstein": "Goppenstein 汽车火车南端",
-      "Kandersteg": "Kandersteg 汽车火车北端",
       "Grindelwald": "Grindelwald",
+      "Interlaken / Harder Kulm": "Interlaken / Harder Kulm",
+      "Lauterbrunnen": "Lauterbrunnen 山谷",
+      "Stechelberg": "Stechelberg 缆车站",
+      "Muerren / Gimmelwald": "Mürren / Gimmelwald",
+      "Grindelwald First": "Grindelwald First",
+      "Bachalpsee": "Bachalpsee",
       "Luzern short stop": "Luzern 卢塞恩短停",
       "Chur": "Chur 库尔",
       "Davos": "Davos 达沃斯",
@@ -346,35 +345,21 @@
     };
 
     const lodgingZh = {
-      "9/25 lodging: Taesch": "9/25 推荐住宿：Täsch",
-      "9/26-9/27 lodging: Grindelwald": "9/26-9/27 推荐住宿：Grindelwald",
+      "9/25-9/27 lodging: Grindelwald": "9/25-9/27 推荐住宿：Grindelwald",
       "9/28-9/29 lodging: Ortisei": "9/28-9/29 推荐住宿：Ortisei",
       "9/30 lodging: Milan Malpensa airport area": "9/30 推荐住宿：米兰 Malpensa 机场附近"
     };
 
     const planDuration = {
-      d1_mxp_taesch: "计划 3小时45分",
-      d2_taesch_goppenstein: "计划 1小时15分",
-      d2_loetschberg_car_train: "计划 45分",
-      d2_kandersteg_grindelwald: "计划 1小时45分",
+      d1_mxp_grindelwald: "计划 5小时，含取车、边境/休息缓冲；下午轻量游玩",
+      d2_grindelwald_lauterbrunnen_grindelwald: "计划整天游玩，驾驶约 1小时，山谷/瀑布/缆车约 7-8 小时",
+      d3_grindelwald_first_bachalpsee: "计划整天缆车徒步，First + Bachalpsee 约 5-6 小时，下午按天气补 Kleine Scheidegg / 小镇",
       d4_grindelwald_lucerne_ortisei: "计划 11小时30分，含卢塞恩短停和途中休息",
       d5_ortisei_funes_ortisei: "计划整天游玩，傍晚富内斯山谷打卡；驾驶约 1小时12分，游玩约 8-10 小时",
       d6_ortisei_trecime_mxp: "计划 15小时30分，其中驾驶约 7小时15分，含三峰山短线徒步、长途回米兰机场和晚餐休息"
     };
 
     const extraCardsAfter = {
-      d2_kandersteg_grindelwald: [
-        {
-          title: "9/27 Grindelwald 少女峰地区整天",
-          meta: [
-            ["住宿", "Grindelwald 第2晚"],
-            ["驾驶", "少开车"],
-            ["预算", "CHF 70-260+/人"],
-            ["时间", "08:30-18:00"]
-          ],
-          body: "上午 First + Cliff Walk + Bachalpsee，约 4-5 小时，预算约 CHF 70-95/人；下午 Männlichen / Kleine Scheidegg 看 Eiger 山景，约 3 小时，预算约 CHF 40-90/人。若天气极稳且预算充足，可改 Jungfraujoch，约 5-7 小时、CHF 180-260+/人。"
-        }
-      ],
       d6_ortisei_trecime_mxp: [
         {
           title: "10/1 Malpensa 机场 -> 巴塞罗那",
@@ -400,10 +385,9 @@
     L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
 
     const colors = {
-      d1_mxp_taesch: "#1565c0",
-      d2_taesch_goppenstein: "#217a4b",
-      d2_loetschberg_car_train: "#7b4ab2",
-      d2_kandersteg_grindelwald: "#217a4b",
+      d1_mxp_grindelwald: "#1565c0",
+      d2_grindelwald_lauterbrunnen_grindelwald: "#217a4b",
+      d3_grindelwald_first_bachalpsee: "#7b4ab2",
       d4_grindelwald_lucerne_ortisei: "#c55f10",
       d5_ortisei_funes_ortisei: "#8a6f1d",
       d6_ortisei_trecime_mxp: "#00838f"
@@ -441,7 +425,7 @@
     data.routes.forEach((route) => {
       const coords = route.geometry.coordinates;
       const latLngs = coords.map((c) => [c[1], c[0]]);
-      const isRail = route.id === "d2_loetschberg_car_train";
+      const isRail = route.mode === "local";
       const line = L.polyline(latLngs, {
         color: colors[route.id],
         weight: isRail ? 4 : 5,
@@ -454,24 +438,25 @@
       allBounds.push(line.getBounds());
 
       const info = zh[route.id];
-      const driveText = route.id === "d2_loetschberg_car_train"
-        ? "汽车火车 45分"
+      const driveText = route.mode === "local"
+        ? (route.travel_label || "本地游玩")
         : `驾驶约 ${minutesToText(route.duration_min)}`;
-      const label = `${info.title}<br>${route.distance_km} km · ${driveText}<br>${route.depart} -> ${route.arrive}`;
+      const distanceText = route.mode === "local" ? "本地缆车/徒步" : `${route.distance_km} km`;
+      const label = `${info.title}<br>${distanceText} · ${driveText}<br>${route.depart} -> ${route.arrive}`;
 
       L.marker(routeMiddleLatLng(coords), {
         icon: L.divIcon({ className: "", html: `<div class="route-label">${label}</div>`, iconSize: [190, 58], iconAnchor: [95, 29] }),
         interactive: false
       }).addTo(map);
 
-      line.bindPopup(`<b>${info.title}</b><br>${info.fromTo}<br>${route.distance_km} km · ${driveText}<br>${route.depart} -> ${route.arrive}<br>${info.note}`);
+      line.bindPopup(`<b>${info.title}</b><br>${info.fromTo}<br>${distanceText} · ${driveText}<br>${route.depart} -> ${route.arrive}<br>${info.note}`);
 
       const article = document.createElement("article");
       article.className = "segment";
       article.innerHTML = `
         <h2>${info.title}</h2>
         <div class="meta">
-          <span><b>路程</b> ${route.distance_km} km</span>
+          <span><b>路程</b> ${distanceText}</span>
           <span><b>用时</b> ${driveText}</span>
           <span><b>出发</b> ${route.depart}</span>
           <span><b>到达</b> ${route.arrive}</span>
